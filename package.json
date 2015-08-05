@@ -1,0 +1,22 @@
+{
+  "name": "albert",
+  "version": "1.0.0",
+  "description": "A Teamspeak 3 Bot-Framework",
+  "main": "core.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schroffl/Albert.git"
+  },
+  "keywords": [
+    "teamspeak"
+  ],
+  "author": "schroffl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/schroffl/Albert/issues"
+  },
+  "homepage": "https://github.com/schroffl/Albert#readme"
+}
