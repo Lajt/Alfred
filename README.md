@@ -48,5 +48,5 @@ bot.start(); // This will start the bot
 - `port` - Port of the ServerQuery // Default: 10011
 - `login-name` - Specifies the name used to log into the server // Default: 'serveradmin'
 - `login-pass` - Specifies the password used to log into the server
-- `virtual-server` - Virtual-Server-ID of your server // Default: 1 // The default will be right in 99/100 times
+- `virtual-server` - Virtual-Server-ID // Default: 1 // The default will be right in 99/100 times
 - `command-identifer` - Determines how a command is specified // Default: '.'
