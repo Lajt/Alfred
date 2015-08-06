@@ -1,5 +1,6 @@
 var net = require('net');
 var sys = require('sys');
+var path = require('path');
 var util = require('util');
 var events = require('events');
 var lineInputStream = require('line-input-stream');
@@ -16,10 +17,6 @@ function Alfred() {
     global.bot_reference = this;
     global.bot_proto_reference = Alfred;
 
-    core_include('query');
-    core_include('admin');
-    core_include('cmdmanager');
-
     self.config = {
         'name': 'Alfred',
         'host': '127.0.0.1',
@@ -31,6 +28,7 @@ function Alfred() {
     };
     self.extensions = [];
     self.self = -1;
+    var _this = this;
 
     function checkQueue() {
         if(!current && commandQueue.length > 0) {
@@ -48,10 +46,6 @@ function Alfred() {
     	if(minutes < 10) minutes = "0" + minutes;
     	if(seconds < 10) seconds = "0" + seconds;
     	return "[" + hours + ":" + minutes + ":" + seconds + "]";
-    }
-
-    function core_include(extension) {
-        return require(__dirname + '/core_extensions/' + extension + '/' + extension + '.js');
     }
 
     Alfred.prototype.configure = function (settings) {
@@ -109,6 +103,9 @@ function Alfred() {
     }
 
     Alfred.prototype.load = function() {
+        self.include(__dirname + '/core_extensions/query');
+        self.include(__dirname + '/core_extensions/admin');
+        self.include(__dirname + '/core_extensions/cmdmanager');
         self.sendCommand('login', [self.config["login-name"], self.config["login-pass"]], function(err, data) {
             if(err != 0) {
                 data["login-name"] = self.config["login-name"];
@@ -127,8 +124,10 @@ function Alfred() {
     }
 
     Alfred.prototype.include = function(extension) {
-        self.extensions.push(require(extension + '/extension.json'));
-        return require(extension + '/' + extension + '.js');
+        var extension_path = path.resolve(extension);
+        extension = extension.split('/');
+        self.extensions.push(require(extension_path + '/extension.json'));
+        return require(extension_path + '/' + extension[extension.length - 1] + '.js');
     }
 
     Alfred.prototype.encode = function(string) {
