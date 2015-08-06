@@ -31,6 +31,5 @@ bot_proto.prototype.userSetAdmin = function(targetuid, adminLevel) {
 }
 
 function saveToFile(content) {
-	console.log(content);
 	fs.writeFile(__dirname + '/admins.json', JSON.stringify(content, null, 4));
 }
