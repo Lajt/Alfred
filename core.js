@@ -105,8 +105,6 @@ function Alfred() {
             sock.on('error', function(error) {
                 self.emit('sock_error', 1337, error);
             });
-
-            self.emit('connect');
         });
     }
 
@@ -116,7 +114,9 @@ function Alfred() {
                 data["login-name"] = self.config["login-name"];
                 data["login-pass"] = self.config["login-pass"];
                 self.throwErr(err, data);
+                return;
             }
+            self.emit('login');
         });
         self.sendCommand('use', {'sid': self.config["virtual-server"]});
         self.sendCommand('clientupdate', {'client_nickname': self.config["name"]});
