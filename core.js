@@ -190,9 +190,8 @@ function Alfred() {
         self.emit('error', err, text);
         return self;
     }
-
-    Alfred.on('error', function() {});
 }
 
 util.inherits(Alfred, events.EventEmitter);
+Alfred.on('error', function() {});
 exports.Alfred = Alfred;
