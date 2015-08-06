@@ -37,7 +37,7 @@ function parseCmd(cmd) {
 
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(commands.hasOwnProperty(cmd)) return bot.emit('error', 2, "Command already exists: " + cmd);
+	if(commands.hasOwnProperty(cmd)) return bot.throwErr(2, "Command already exists: " + cmd);
 	commands[cmd] = {};
 	commands[cmd]["callback"] = callbackFunction;
 	commands[cmd]["adminLevel"] = adminLevel;
@@ -47,7 +47,7 @@ bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, 
 
 bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(globalCommands.hasOwnProperty(cmd)) return bot.emit('error', 2, "GlobalCommand already exists: " + cmd);
+	if(globalCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "GlobalCommand already exists: " + cmd);
 	globalCommands[cmd] = {};
 	globalCommands[cmd]["callback"] = callbackFunction;
 	globalCommands[cmd]["adminLevel"] = adminLevel;
@@ -57,7 +57,7 @@ bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, u
 
 bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(channelCommands.hasOwnProperty(cmd)) return bot.emit('error', 2, "ChannelCommand already exists: " + cmd);
+	if(channelCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "ChannelCommand already exists: " + cmd);
 	channelCommands[cmd] = {};
 	channelCommands[cmd]["callback"] = callbackFunction;
 	channelCommands[cmd]["adminLevel"] = adminLevel;
@@ -68,7 +68,7 @@ bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLe
 
 bot_proto.prototype.addConsoleCmd = function(cmd, callbackFunction, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(consoleCommands.hasOwnProperty(cmd)) return bot.emit('error', 2, "ConsoleCommand already exists: " + cmd);
+	if(consoleCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "ConsoleCommand already exists: " + cmd);
 	consoleCommands[cmd] = {};
 	consoleCommands[cmd]["callback"] = callbackFunction;
 	consoleCommands[cmd]["usage"] = usage;

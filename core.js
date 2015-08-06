@@ -102,7 +102,7 @@ function Alfred() {
             });
 
             sock.on('error', function(error) {
-                self.emit('sock_error', error);
+                self.emit('error', 1337, error);
             });
 
             self.emit('connect');
@@ -114,7 +114,7 @@ function Alfred() {
             if(err != 0) {
                 data["login-name"] = self.config["login-name"];
                 data["login-pass"] = self.config["login-pass"];
-                self.emit('error', err, data);
+                self.throwErr(err, data);
             }
         });
         self.sendCommand('use', {'sid': self.config["virtual-server"]});
@@ -186,10 +186,12 @@ function Alfred() {
         return self;
     }
 
-    self.on('error', function(err, data) {
-        var error = new Error(util.inspect(data));
-        if(self.listeners('error').length === 1) throw error;
-    });
+    Alfred.prototype.throwErr = function(err, err_data) {
+        err_data["err_code"] = parseInt(err);
+        var error = new Error(util.inspect(err_data));
+        if(self.listeners('error').length === 0) throw error;
+        self.emit('error', err_data);
+    }
 }
 
 util.inherits(Alfred, events.EventEmitter);
