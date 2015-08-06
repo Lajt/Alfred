@@ -1,8 +1,11 @@
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
+
+var stdin = process.openStdin();
 var commands = {};
 var globalCommands = {};
 var channelCommands = {};
+var consoleCommands = {};
 
 function parseCmd(cmd) {
 	var args = cmd.split(' ');
@@ -47,7 +50,7 @@ bot_proto.prototype.sayChannel = function(msg, target) {
 
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(commands.hasOwnProperty(cmd)) bot.throwErr("Command already exists: " + cmd);
+	if(commands.hasOwnProperty(cmd)) return bot.throwErr("Command already exists: " + cmd);
 	commands[cmd] = {};
 	commands[cmd]["callback"] = callbackFunction;
 	commands[cmd]["adminLevel"] = adminLevel;
@@ -57,7 +60,7 @@ bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, 
 
 bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(globalCommands.hasOwnProperty(cmd)) bot.throwErr("GlobalCommand already exists: " + cmd);
+	if(globalCommands.hasOwnProperty(cmd)) return bot.throwErr("GlobalCommand already exists: " + cmd);
 	globalCommands[cmd] = {};
 	globalCommands[cmd]["callback"] = callbackFunction;
 	globalCommands[cmd]["adminLevel"] = adminLevel;
@@ -67,13 +70,22 @@ bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, u
 
 bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(channelCommands.hasOwnProperty(cmd)) bot.throwErr("ChannelCommand already exists: " + cmd);
+	if(channelCommands.hasOwnProperty(cmd)) return bot.throwErr("ChannelCommand already exists: " + cmd);
 	channelCommands[cmd] = {};
 	channelCommands[cmd]["callback"] = callbackFunction;
 	channelCommands[cmd]["adminLevel"] = adminLevel;
 	channelCommands[cmd]["usage"] = usage;
 	channelCommands[cmd]["desc"] = description;
 	channelCommands[cmd]["cid"] = cid;
+}
+
+bot_proto.prototype.addConsoleCmd = function(cmd, callbackFunction, usage, description) {
+	if(typeof callbackFunction != 'function') return;
+	if(consoleCommands.hasOwnProperty(cmd)) return bot.throwErr("ConsoleCommand already exists: " + cmd);
+	consoleCommands[cmd] = {};
+	consoleCommands[cmd]["callback"] = callbackFunction;
+	consoleCommands[cmd]["usage"] = usage;
+	consoleCommands[cmd]["desc"] = description;
 }
 
 bot.on('textmessage', function(data) {
@@ -116,4 +128,16 @@ bot.on('textmessage', function(data) {
 			}
 		}
 	});
+});
+
+stdin.addListener('data', function(input) {
+	input = input.toString().trim();
+	input = parseCmd(input);
+
+	for(var command in consoleCommands) {
+		if(input[0] == command) {
+			input.splice(0, 1);
+			return consoleCommands[command]["callback"](input);
+		}
+	}
 });
