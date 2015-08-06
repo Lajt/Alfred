@@ -80,7 +80,7 @@ bot.on('textmessage', function(data) {
 	var _data = data, params = parseCmd(data["msg"]);
 
 	for(var command in commands) {
-		if(params[0] == "." + command && data["targetmode"] == 1 && bot.userIsAdmin(data["invokeruid"], commands[command]["adminLevel"])) {
+		if(params[0] == bot.config["command-identifer"] + command && data["targetmode"] == 1 && bot.userIsAdmin(data["invokeruid"], commands[command]["adminLevel"])) {
 			var invokerid = data["invokerid"];
 			delete data["invokerid"];
 			delete data["msg"];
@@ -91,7 +91,7 @@ bot.on('textmessage', function(data) {
 	}
 
 	for(var command in globalCommands) {
-		if(params[0] == "." + command && data["targetmode"] == 3 && bot.userIsAdmin(data["invokeruid"], globalCommands[command]["adminLevel"])) {
+		if(params[0] == bot.config["command-identifer"] + command && data["targetmode"] == 3 && bot.userIsAdmin(data["invokeruid"], globalCommands[command]["adminLevel"])) {
 			var invokerid = data["invokerid"];
 			delete data["invokerid"];
 			delete data["msg"];
@@ -104,7 +104,7 @@ bot.on('textmessage', function(data) {
 	bot.clientinfo(parseInt(data["invokerid"]), function(err, data) {
 		var cid = data["cid"];
 		for(var command in channelCommands) {
-			if(params[0] == "." + command && _data["targetmode"] == 2 && cid == channelCommands[command]["cid"] && bot.userIsAdmin(_data["invokeruid"], channelCommands[command]["adminLevel"])) {
+			if(params[0] == bot.config["command-identifer"] + command && _data["targetmode"] == 2 && cid == channelCommands[command]["cid"] && bot.userIsAdmin(_data["invokeruid"], channelCommands[command]["adminLevel"])) {
 					console.log(_data);
 					var invokerid = _data["invokerid"];
 					delete _data["invokerid"];

@@ -26,7 +26,8 @@ function Alfred() {
         'port': 10011,
         'login-name': 'serveradmin',
         'login-pass': 'password',
-        'virtual-server': 1
+        'virtual-server': 1,
+        'command-identifer': '.'
     };
     self.extensions = [];
     self.self = -1;
