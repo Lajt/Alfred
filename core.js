@@ -193,5 +193,4 @@ function Alfred() {
 }
 
 util.inherits(Alfred, events.EventEmitter);
-Alfred.on('error', function() {});
 exports.Alfred = Alfred;
