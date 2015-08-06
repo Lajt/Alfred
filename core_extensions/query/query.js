@@ -3,7 +3,7 @@ var bot_proto = global.bot_proto_reference;
 
 bot_proto.prototype.clientfind = function(client_nickname, callbackFunction) {
 	bot.sendCommand('clientfind', {'pattern': client_nickname}, function(err, data) {
-		if(typeof callbackFunction == 'function') callbackFunction(data);
+		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
 }
 
@@ -28,7 +28,7 @@ bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
 	var client_found = false;
 
 	if(typeof clid == 'string') {
-		bot.clientfind(clid, function(data) {
+		bot.clientfind(clid, function(err, data) {
 			clid = data["clid"];
 			client_found = true;
 		});
@@ -38,7 +38,7 @@ bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
 		if(client_found) {
 			clearInterval(continueFunction);
 			bot.sendCommand('clientinfo', {'clid': clid}, function(err, clientinfo) {
-				if(typeof callbackFunction == 'function') callbackFunction(clientinfo);
+				if(typeof callbackFunction == 'function') callbackFunction(err, clientinfo);
 			});
 		}
 	}, 0);
@@ -46,7 +46,7 @@ bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
 
 bot_proto.prototype.clientmove = function(clid, cid, callbackFunction) {
 	bot.sendCommand('clientmove', {'clid': clid, 'cid': cid}, function(err, data) {
-		if(typeof callbackFunction == 'function') callbackFunction(err);
+		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
 }
 
@@ -67,6 +67,18 @@ bot_proto.prototype.channeldelete = function(cid, callbackFunction) {
 bot_proto.prototype.channeledit = function(cid, channel_params, callbackFunction) {
 	channel_params["cid"] = cid;
 	bot.sendCommand('channeledit', channel_params, function(err, data) {
+		if(typeof callbackFunction == 'function') callbackFunction(err, data);
+	});
+}
+
+bot_proto.prototype.groupAddClient = function (sgid, targetdbid, callbackFunction) {
+	bot.sendCommand('servergroupaddclient', {'sgid': sgid, 'cldbid': targetdbid}, function(err, data) {
+		if(typeof callbackFunction == 'function') callbackFunction(err, data);
+	});
+}
+
+bot_proto.prototype.groupDelClient = function(sgid, targetdbid, callbackFunction) {
+	bot.sendCommand('servergroupdelclient', {'sgid': sgid, 'cldbid': targetdbid}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
 }
