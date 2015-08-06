@@ -109,11 +109,13 @@ function Alfred() {
     }
 
     Alfred.prototype.load = function() {
+        var error_occured = false
         self.sendCommand('login', [self.config["login-name"], self.config["login-pass"]], function(err, data) {
             if(err != 0) {
                 data["login-name"] = self.config["login-name"];
                 data["login-pass"] = self.config["login-pass"];
                 self.throwErr(err, data);
+                error_occured = true;
                 return;
             }
         });
@@ -122,7 +124,7 @@ function Alfred() {
         self.sendCommand('whoami', null, function(err, data) {
             self.self = data["client_id"];
         });
-        self.emit('load');
+        if(!error_occured) self.emit('load');
         return this;
     }
 
