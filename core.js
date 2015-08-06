@@ -2,22 +2,19 @@ var net = require('net');
 var sys = require('sys');
 var util = require('util');
 var events = require('events');
-var manager = require('./manager');
 var lineInputStream = require('line-input-stream');
 
 var sock = new net.Socket();
 var commandQueue = [];
 var status = -2;
 var current = false;
-var loginErrors = {
-    '520': 'Wrong password',
-    '3329': 'You are currently banned from the server for trying to log in with the wrong password too often'
-}
 
 function Albert() {
-    events.EventEmitter.call(this);
-
     var self = this;
+    events.EventEmitter.call(this);
+    global.bot_reference = this;
+    global.bot_proto_reference = Albert;
+
     self.config = {
         'name': 'Albert',
         'host': '127.0.0.1',
@@ -27,7 +24,7 @@ function Albert() {
         'virtual-server': 1
     };
     self.extensions = [];
-    self.myself = -1;
+    self.self = -1;
 
     function checkQueue() {
         if(!current && commandQueue.length > 0) {
@@ -45,6 +42,11 @@ function Albert() {
     	if(minutes < 10) minutes = "0" + minutes;
     	if(seconds < 10) seconds = "0" + seconds;
     	return "[" + hours + ":" + minutes + ":" + seconds + "]";
+    }
+
+    function core_include(extension) {
+        self.extensions.push(require(__dirname + '/core_extensions/' + extension + '/extension.json'));
+        return require(__dirname + '/core_extensions/' + extension + '/' + extension + '.js');
     }
 
     Albert.prototype.configure = function (settings) {
@@ -76,8 +78,11 @@ function Albert() {
                 }
 
                 if(_recv[0] == "error") {
+                    var _error = _data["id"];
+                    delete _data["error"] ;
+                    delete _data["id"];
                     if(typeof current.data == 'undefined') current.data = _data;
-                    if(current["callback"]) current["callback"].call(current, _data["id"], current.data);
+                    if(current["callback"]) current["callback"].call(current, _error, current.data, current.raw_data);
                     current = false;
                     checkQueue();
                 }
@@ -86,6 +91,7 @@ function Albert() {
                 }
                 else if(current) {
                     current.data = _data;
+                    current.raw_data = recv.toString();
                 }
             });
 
@@ -98,21 +104,28 @@ function Albert() {
     }
 
     Albert.prototype.load = function() {
+        core_include('query');
+        //core_include('admin');
+        //core_include('cmdmanager');
+
         self.sendCommand('login', [self.config["login-name"], self.config["login-pass"]], function(err, data) {
             if(err != 0) {
-                self.throwErr(1, loginErrors[String(err)] + '\r\n' + data["msg"] + '\r\n' + data["extra_msg"]);
+                self.throwErr(err, data);
+                return;
             }
         });
         self.sendCommand('use', {'sid': self.config["virtual-server"]});
-        self.sendCommand('clientupdate', {'client_nickname': self._name});
+        self.sendCommand('clientupdate', {'client_nickname': self.config["name"]});
         self.sendCommand('whoami', null, function(err, data) {
-            console.log(data);
+            self.self = data["client_id"];
         });
+        self.emit('load');
         return this;
     }
 
     Albert.prototype.include = function(extension) {
-        // TODO: Code include function
+        self.extensions.push(require(extension + '/extension.json'));
+        return require(extension + '/' + extension + '.js');
     }
 
     Albert.prototype.encode = function(string) {
@@ -172,8 +185,9 @@ function Albert() {
     }
 
     Albert.prototype.throwErr = function(err, text) {
-        console.log(timeStamp() + text);
+        console.log(timeStamp() + "[BOT-ERROR] " + err);
         self.emit('bot_error', err, text);
+        process.exit();
         return self;
     }
 }
