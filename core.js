@@ -8,6 +8,7 @@ var sock = new net.Socket();
 var commandQueue = [];
 var status = -2;
 var current = false;
+var fatalErrors = [520, 3329, ];
 
 function Alfred() {
     var self = this;
@@ -109,14 +110,11 @@ function Alfred() {
     }
 
     Alfred.prototype.load = function() {
-        var error_occured = false
         self.sendCommand('login', [self.config["login-name"], self.config["login-pass"]], function(err, data) {
             if(err != 0) {
                 data["login-name"] = self.config["login-name"];
                 data["login-pass"] = self.config["login-pass"];
-                self.throwErr(err, data);
-                error_occured = true;
-                return;
+                self.emit('error', err, data);
             }
         });
         self.sendCommand('use', {'sid': self.config["virtual-server"]});
@@ -124,8 +122,7 @@ function Alfred() {
         self.sendCommand('whoami', null, function(err, data) {
             self.self = data["client_id"];
         });
-        if(!error_occured) self.emit('load');
-        return this;
+        self.emit('load');
     }
 
     Alfred.prototype.include = function(extension) {
@@ -189,13 +186,10 @@ function Alfred() {
         return self;
     }
 
-    Alfred.prototype.throwErr = function(err, text) {
-        text = util.inspect(text);
-        var error = new Error(text);
-        if(self.listeners('error').length === 0) throw error;
-        self.emit('error', err, error);
-        return self;
-    }
+    self.on('error', function(err, data) {
+        var error = new Error(util.inspect(data));
+        if(self.listeners('error').length === 1) throw error;
+    });
 }
 
 util.inherits(Alfred, events.EventEmitter);
