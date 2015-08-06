@@ -182,6 +182,7 @@ function Alfred() {
     }
 
     Alfred.prototype.registerEvent = function(event, params) {
+        if(typeof params == 'undefined') params = {};
         params["event"] = event;
         self.sendCommand('servernotifyregister', params);
     }
