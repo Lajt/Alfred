@@ -1,6 +1,6 @@
 {
-  "name": "albert-teamspeak",
-  "version": "1.0.0",
+  "name": "alfred-teamspeak",
+  "version": "1.0.1",
   "description": "A Teamspeak 3 Bot-Framework",
   "main": "core.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/schroffl/Albert.git"
+    "url": "git+https://github.com/schroffl/alfred.git"
   },
   "keywords": [
     "teamspeak"
@@ -16,7 +16,10 @@
   "author": "schroffl",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/schroffl/Albert/issues"
+    "url": "https://github.com/schroffl/alfred/issues"
   },
-  "homepage": "https://github.com/schroffl/Albert#readme"
+  "homepage": "https://github.com/schroffl/alfred#readme",
+  "dependencies": {
+    "line-input-stream": "^1.0.1"
+  }
 }
