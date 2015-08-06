@@ -115,6 +115,8 @@ bot.on('textmessage', function(data) {
 			}
 		}
 	});
+
+	bot.sendMessage("Command not found", data["invokerid"]);
 });
 
 stdin.addListener('data', function(input) {
