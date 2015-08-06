@@ -30,5 +30,4 @@ Alfred can be easily installed using the Node Packet Manager:
 	}, false, '!test', 'This is a testcommand');
 
 	bot.start(); // This will start the bot
-
 ```
