@@ -116,13 +116,13 @@ function Alfred() {
                 data["login-pass"] = self.config["login-pass"];
                 self.throwErr(err, data);
             }
+            self.emit('login');
         });
         self.sendCommand('use', {'sid': self.config["virtual-server"]});
         self.sendCommand('clientupdate', {'client_nickname': self.config["name"]});
         self.sendCommand('whoami', null, function(err, data) {
             self.self = data["client_id"];
         });
-        self.emit('load');
     }
 
     Alfred.prototype.include = function(extension) {
