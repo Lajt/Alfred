@@ -45,7 +45,6 @@ function Albert() {
     }
 
     function core_include(extension) {
-        self.extensions.push(require(__dirname + '/core_extensions/' + extension + '/extension.json'));
         return require(__dirname + '/core_extensions/' + extension + '/' + extension + '.js');
     }
 
@@ -87,6 +86,7 @@ function Albert() {
                     checkQueue();
                 }
                 else if(_recv[0].substr(0, 6) == "notify") {
+                    delete _data[_recv[0]];
                     self.emit(_recv[0].slice(6, _recv[0].length), _data);
                 }
                 else if(current) {
@@ -105,8 +105,8 @@ function Albert() {
 
     Albert.prototype.load = function() {
         core_include('query');
-        //core_include('admin');
-        //core_include('cmdmanager');
+        core_include('admin');
+        core_include('cmdmanager');
 
         self.sendCommand('login', [self.config["login-name"], self.config["login-pass"]], function(err, data) {
             if(err != 0) {
@@ -166,7 +166,7 @@ function Albert() {
         } else if(typeof parameters == 'object') {
             for(var param in parameters) _parameters.push(self.encode(param) + '=' + self.encode(parameters[param]));
         } else {
-            _parameters.push(String(paramters));
+            _parameters.push(self.encode(String(parameters)));
         }
 
         if(typeof callbackFunction != 'function') callbackFunction = function(err, data) {};
