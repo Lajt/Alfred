@@ -38,6 +38,7 @@ bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
 		if(client_found) {
 			clearInterval(continueFunction);
 			bot.sendCommand('clientinfo', {'clid': clid}, function(err, clientinfo) {
+				clientinfo["clid"] = clid;
 				if(typeof callbackFunction == 'function') callbackFunction(err, clientinfo);
 			});
 		}
