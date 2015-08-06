@@ -54,7 +54,7 @@ function Alfred() {
 
     Alfred.prototype.configure = function (settings) {
         for(var setting in settings) {
-            if(!self.config.hasOwnProperty(settings)) continue;
+            if(!self.config.hasOwnProperty(setting)) continue;
             self.config[setting] = settings[setting];
         }
         return this;
