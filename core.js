@@ -15,6 +15,10 @@ function Alfred() {
     global.bot_reference = this;
     global.bot_proto_reference = Alfred;
 
+    core_include('query');
+    core_include('admin');
+    core_include('cmdmanager');
+
     self.config = {
         'name': 'Alfred',
         'host': '127.0.0.1',
@@ -104,10 +108,6 @@ function Alfred() {
     }
 
     Alfred.prototype.load = function() {
-        core_include('query');
-        core_include('admin');
-        core_include('cmdmanager');
-
         self.sendCommand('login', [self.config["login-name"], self.config["login-pass"]], function(err, data) {
             if(err != 0) {
                 self.throwErr(err, data);
