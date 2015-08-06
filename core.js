@@ -54,6 +54,7 @@ function Alfred() {
 
     Alfred.prototype.configure = function (settings) {
         for(var setting in settings) {
+            if(!self.config.hasOwnProperty(settings)) continue;
             self.config[setting] = settings[setting];
         }
         return this;
@@ -186,10 +187,11 @@ function Alfred() {
 
     Alfred.prototype.throwErr = function(err, text) {
         console.log(timeStamp() + "[BOT-ERROR] " + err);
-        self.emit('bot_error', err, text);
-        process.exit(err);
+        self.emit('error', err, text);
         return self;
     }
+
+    Alfred.on('error', function() {});
 }
 
 util.inherits(Alfred, events.EventEmitter);
