@@ -102,7 +102,7 @@ function Alfred() {
             });
 
             sock.on('error', function(error) {
-                self.emit('error', 1337, error);
+                self.emit('sock_error', 1337, error);
             });
 
             self.emit('connect');
