@@ -1,6 +1,19 @@
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
 
+bot_proto.prototype.sendMessage = function(msg, target) {
+	if(typeof msg != 'string') return;
+	bot.sendCommand('sendtextmessage', {'targetmode': 1, 'target': target, 'msg': msg});
+}
+
+bot_proto.prototype.say = function(msg) {
+	return bot.sendCommand('gm', {'msg': msg});
+}
+
+bot_proto.prototype.sayChannel = function(msg, target) {
+	return bot.sendCommand('sendtextmessage', {'targetmode': 2, 'target': target, 'msg': msg});
+}
+
 bot_proto.prototype.clientfind = function(client_nickname, callbackFunction) {
 	bot.sendCommand('clientfind', {'pattern': client_nickname}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);

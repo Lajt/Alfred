@@ -35,22 +35,9 @@ function parseCmd(cmd) {
 	return args;
 }
 
-bot_proto.prototype.sendMessage = function(msg, target) {
-	if(typeof msg != 'string') return;
-	bot.sendCommand('sendtextmessage', {'targetmode': 1, 'target': target, 'msg': msg});
-}
-
-bot_proto.prototype.say = function(msg) {
-	return bot.sendCommand('gm', {'msg': msg});
-}
-
-bot_proto.prototype.sayChannel = function(msg, target) {
-	return bot.sendCommand('sendtextmessage', {'targetmode': 2, 'target': target, 'msg': msg});
-}
-
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(commands.hasOwnProperty(cmd)) return bot.throwErr("Command already exists: " + cmd);
+	if(commands.hasOwnProperty(cmd)) return bot.emit('error', 2, "Command already exists: " + cmd);
 	commands[cmd] = {};
 	commands[cmd]["callback"] = callbackFunction;
 	commands[cmd]["adminLevel"] = adminLevel;
@@ -60,7 +47,7 @@ bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, 
 
 bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(globalCommands.hasOwnProperty(cmd)) return bot.throwErr("GlobalCommand already exists: " + cmd);
+	if(globalCommands.hasOwnProperty(cmd)) return bot.emit('error', 2, "GlobalCommand already exists: " + cmd);
 	globalCommands[cmd] = {};
 	globalCommands[cmd]["callback"] = callbackFunction;
 	globalCommands[cmd]["adminLevel"] = adminLevel;
@@ -70,7 +57,7 @@ bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, u
 
 bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(channelCommands.hasOwnProperty(cmd)) return bot.throwErr("ChannelCommand already exists: " + cmd);
+	if(channelCommands.hasOwnProperty(cmd)) return bot.emit('error', 2, "ChannelCommand already exists: " + cmd);
 	channelCommands[cmd] = {};
 	channelCommands[cmd]["callback"] = callbackFunction;
 	channelCommands[cmd]["adminLevel"] = adminLevel;
@@ -81,7 +68,7 @@ bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLe
 
 bot_proto.prototype.addConsoleCmd = function(cmd, callbackFunction, usage, description) {
 	if(typeof callbackFunction != 'function') return;
-	if(consoleCommands.hasOwnProperty(cmd)) return bot.throwErr("ConsoleCommand already exists: " + cmd);
+	if(consoleCommands.hasOwnProperty(cmd)) return bot.emit('error', 2, "ConsoleCommand already exists: " + cmd);
 	consoleCommands[cmd] = {};
 	consoleCommands[cmd]["callback"] = callbackFunction;
 	consoleCommands[cmd]["usage"] = usage;
