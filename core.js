@@ -89,7 +89,7 @@ function Alfred() {
                     delete _data["error"] ;
                     delete _data["id"];
                     if(typeof current.data == 'undefined') current.data = _data;
-                    if(current["callback"]) current["callback"].call(current, _error, current.data, current.raw_data);
+                    if(current["callback"]) current["callback"].call(current, parseInt(_error), current.data, current.raw_data);
                     current = false;
                     checkQueue();
                 }

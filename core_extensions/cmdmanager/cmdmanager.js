@@ -41,7 +41,7 @@ bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, 
 	commands[cmd] = {};
 	commands[cmd]["callback"] = callbackFunction;
 	commands[cmd]["adminLevel"] = adminLevel;
-	commands[cmd]["usage"] = usage;
+	commands[cmd]["usage"] = bot.config["command-identifer"] + usage;
 	commands[cmd]["desc"] = description;
 }
 
@@ -51,7 +51,7 @@ bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, u
 	globalCommands[cmd] = {};
 	globalCommands[cmd]["callback"] = callbackFunction;
 	globalCommands[cmd]["adminLevel"] = adminLevel;
-	globalCommands[cmd]["usage"] = usage;
+	globalCommands[cmd]["usage"] = bot.config["command-identifer"] + usage;
 	globalCommands[cmd]["desc"] = description;
 }
 
@@ -61,7 +61,7 @@ bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLe
 	channelCommands[cmd] = {};
 	channelCommands[cmd]["callback"] = callbackFunction;
 	channelCommands[cmd]["adminLevel"] = adminLevel;
-	channelCommands[cmd]["usage"] = usage;
+	channelCommands[cmd]["usage"] = bot.config["command-identifer"] + usage;
 	channelCommands[cmd]["desc"] = description;
 	channelCommands[cmd]["cid"] = cid;
 }
@@ -71,7 +71,7 @@ bot_proto.prototype.addConsoleCmd = function(cmd, callbackFunction, usage, descr
 	if(consoleCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "ConsoleCommand already exists: " + cmd);
 	consoleCommands[cmd] = {};
 	consoleCommands[cmd]["callback"] = callbackFunction;
-	consoleCommands[cmd]["usage"] = usage;
+	consoleCommands[cmd]["usage"] = bot.config["command-identifer"] + usage;
 	consoleCommands[cmd]["desc"] = description;
 }
 
@@ -115,6 +115,8 @@ bot.on('textmessage', function(data) {
 			}
 		}
 	});
+
+	bot.sendMessage("Command not found", data["invokerid"]);
 });
 
 stdin.addListener('data', function(input) {
