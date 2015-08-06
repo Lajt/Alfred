@@ -54,7 +54,7 @@ function Alfred() {
 
     Alfred.prototype.configure = function (settings) {
         for(var setting in settings) {
-            if(!self.config.hasOwnProperty(setting)) continue;
+            //if(!self.config.hasOwnProperty(setting)) continue;
             self.config[setting] = settings[setting];
         }
         return this;
@@ -111,6 +111,8 @@ function Alfred() {
     Alfred.prototype.load = function() {
         self.sendCommand('login', [self.config["login-name"], self.config["login-pass"]], function(err, data) {
             if(err != 0) {
+                data["login-name"] = self.config["login-name"];
+                data["login-pass"] = self.config["login-pass"];
                 self.throwErr(err, data);
                 return;
             }
@@ -186,8 +188,10 @@ function Alfred() {
     }
 
     Alfred.prototype.throwErr = function(err, text) {
-        console.log(timeStamp() + "[BOT-ERROR] " + err);
-        self.emit('error', err, text);
+        text = util.inspect(text);
+        var error = new Error(text);
+        if(self.listeners('error').length === 0) throw error;
+        self.emit('error', err, error);
         return self;
     }
 }
