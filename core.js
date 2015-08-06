@@ -172,11 +172,11 @@ function Alfred() {
         if(typeof callbackFunction != 'function') callbackFunction = function(err, data) {};
         commandQueue.push({'cmd': command, 'params': _parameters, 'callback': callbackFunction});
         if(status === 0) checkQueue();
-        return this;
+        return command + ' ' + _parameters.join(' ');
     }
 
-    Alfred.prototype.registerEvent = function(event) {
-        self.sendCommand("servernotifyregister event=" + event);
+    Alfred.prototype.registerEvent = function(event, params) {
+        self.sendCommand('servernotifyregister', {'event': event});
     }
 
     Alfred.prototype.log = function(text) {
@@ -187,7 +187,7 @@ function Alfred() {
     Alfred.prototype.throwErr = function(err, text) {
         console.log(timeStamp() + "[BOT-ERROR] " + err);
         self.emit('bot_error', err, text);
-        process.exit();
+        process.exit(err);
         return self;
     }
 }
