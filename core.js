@@ -9,14 +9,14 @@ var commandQueue = [];
 var status = -2;
 var current = false;
 
-function Albert() {
+function Alfred() {
     var self = this;
     events.EventEmitter.call(this);
     global.bot_reference = this;
-    global.bot_proto_reference = Albert;
+    global.bot_proto_reference = Alfred;
 
     self.config = {
-        'name': 'Albert',
+        'name': 'Alfred',
         'host': '127.0.0.1',
         'port': 10011,
         'login-name': 'serveradmin',
@@ -48,14 +48,14 @@ function Albert() {
         return require(__dirname + '/core_extensions/' + extension + '/' + extension + '.js');
     }
 
-    Albert.prototype.configure = function (settings) {
+    Alfred.prototype.configure = function (settings) {
         for(var setting in settings) {
             self.config[setting] = settings[setting];
         }
         return this;
     }
 
-    Albert.prototype.start = function () {
+    Alfred.prototype.start = function () {
         sock.connect(self.config.port, self.config.host, function() {
             self.load();
 
@@ -103,7 +103,7 @@ function Albert() {
         });
     }
 
-    Albert.prototype.load = function() {
+    Alfred.prototype.load = function() {
         core_include('query');
         core_include('admin');
         core_include('cmdmanager');
@@ -123,12 +123,12 @@ function Albert() {
         return this;
     }
 
-    Albert.prototype.include = function(extension) {
+    Alfred.prototype.include = function(extension) {
         self.extensions.push(require(extension + '/extension.json'));
         return require(extension + '/' + extension + '.js');
     }
 
-    Albert.prototype.encode = function(string) {
+    Alfred.prototype.encode = function(string) {
         var ret = String(string);
     	ret = ret.replace(/\\/g, '\\\\');
     	ret = ret.replace(/\//g, '\\/');
@@ -142,7 +142,7 @@ function Albert() {
     	return ret;
     }
 
-    Albert.prototype.decode = function(string) {
+    Alfred.prototype.decode = function(string) {
         var ret = String(string);
     	ret = ret.replace(/\\\\/g, '\\');
     	ret = ret.replace(/\\\//g, "\/");
@@ -156,7 +156,7 @@ function Albert() {
     	return ret;
     }
 
-    Albert.prototype.sendCommand = function(command, parameters, callbackFunction) {
+    Alfred.prototype.sendCommand = function(command, parameters, callbackFunction) {
         var _parameters = [];
 
         if(typeof parameters == 'undefined' || parameters == null) {
@@ -175,16 +175,16 @@ function Albert() {
         return this;
     }
 
-    Albert.prototype.registerEvent = function(event) {
+    Alfred.prototype.registerEvent = function(event) {
         self.sendCommand("servernotifyregister event=" + event);
     }
 
-    Albert.prototype.log = function(text) {
+    Alfred.prototype.log = function(text) {
         console.log(timeStamp() + text);
         return self;
     }
 
-    Albert.prototype.throwErr = function(err, text) {
+    Alfred.prototype.throwErr = function(err, text) {
         console.log(timeStamp() + "[BOT-ERROR] " + err);
         self.emit('bot_error', err, text);
         process.exit();
@@ -192,5 +192,5 @@ function Albert() {
     }
 }
 
-util.inherits(Albert, events.EventEmitter);
-exports.Albert = Albert;
+util.inherits(Alfred, events.EventEmitter);
+exports.Alfred = Alfred;
