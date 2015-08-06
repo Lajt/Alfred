@@ -1,6 +1,8 @@
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
 var commands = {};
+var globalCommands = {};
+var channelCommands = {};
 
 function parseCmd(cmd) {
 	var args = cmd.split(' ');
@@ -32,11 +34,18 @@ function parseCmd(cmd) {
 
 bot_proto.prototype.sendMessage = function(msg, target) {
 	if(typeof msg != 'string') return;
-	msg = bot.encode(msg);
 	bot.sendCommand('sendtextmessage', {'targetmode': 1, 'target': target, 'msg': msg});
 }
 
-bot_proto.prototype.addCmd = function(cmd, targetmode, callbackFunction, adminLevel, usage, description) {
+bot_proto.prototype.say = function(msg) {
+	return bot.sendCommand('gm', {'msg': msg});
+}
+
+bot_proto.prototype.sayChannel = function(msg, target) {
+	return bot.sendCommand('sendtextmessage', {'targetmode': 2, 'target': target, 'msg': msg});
+}
+
+bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
 	if(commands.hasOwnProperty(cmd)) bot.throwErr("Command already exists: " + cmd);
 	commands[cmd] = {};
@@ -44,16 +53,67 @@ bot_proto.prototype.addCmd = function(cmd, targetmode, callbackFunction, adminLe
 	commands[cmd]["adminLevel"] = adminLevel;
 	commands[cmd]["usage"] = usage;
 	commands[cmd]["desc"] = description;
-	commands[cmd]["targetmode"] = targetmode;
+}
+
+bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
+	if(typeof callbackFunction != 'function') return;
+	if(globalCommands.hasOwnProperty(cmd)) bot.throwErr("GlobalCommand already exists: " + cmd);
+	globalCommands[cmd] = {};
+	globalCommands[cmd]["callback"] = callbackFunction;
+	globalCommands[cmd]["adminLevel"] = adminLevel;
+	globalCommands[cmd]["usage"] = usage;
+	globalCommands[cmd]["desc"] = description;
+}
+
+bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLevel, usage, description) {
+	if(typeof callbackFunction != 'function') return;
+	if(channelCommands.hasOwnProperty(cmd)) bot.throwErr("ChannelCommand already exists: " + cmd);
+	channelCommands[cmd] = {};
+	channelCommands[cmd]["callback"] = callbackFunction;
+	channelCommands[cmd]["adminLevel"] = adminLevel;
+	channelCommands[cmd]["usage"] = usage;
+	channelCommands[cmd]["desc"] = description;
+	channelCommands[cmd]["cid"] = cid;
 }
 
 bot.on('textmessage', function(data) {
-	var params = parseCmd(data["msg"]);
+	if(data["invokerid"] == bot.self || data["invokerid"] < 1) return;
+	var _data = data, params = parseCmd(data["msg"]);
+
 	for(var command in commands) {
-		if(params[0] == "." + command && data["targetmode"] == commands[command]["targetmode"]) {
+		if(params[0] == "." + command && data["targetmode"] == 1 && bot.userIsAdmin(data["invokeruid"], commands[command]["adminLevel"])) {
+			var invokerid = data["invokerid"];
+			delete data["invokerid"];
 			delete data["msg"];
 			params.splice(0, 1);
-			commands[command]["callback"](data, params); // FIXME: Improve the callback invocation
+			commands[command]["callback"](invokerid, data, params); // FIXME: Improve the callback invocation
+			return;
 		}
 	}
+
+	for(var command in globalCommands) {
+		if(params[0] == "." + command && data["targetmode"] == 3 && bot.userIsAdmin(data["invokeruid"], globalCommands[command]["adminLevel"])) {
+			var invokerid = data["invokerid"];
+			delete data["invokerid"];
+			delete data["msg"];
+			params.splice(0, 1);
+			globalCommands[command]["callback"](invokerid, data, params); // FIXME: Improve the callback invocation
+			return;
+		}
+	}
+
+	bot.clientinfo(parseInt(data["invokerid"]), function(err, data) {
+		var cid = data["cid"];
+		for(var command in channelCommands) {
+			if(params[0] == "." + command && _data["targetmode"] == 2 && cid == channelCommands[command]["cid"] && bot.userIsAdmin(_data["invokeruid"], channelCommands[command]["adminLevel"])) {
+					console.log(_data);
+					var invokerid = _data["invokerid"];
+					delete _data["invokerid"];
+					delete _data["msg"];
+					params.splice(0, 1);
+					channelCommands[command]["callback"](invokerid, _data, params); // FIXME: Improve the callback invocation
+					return;
+			}
+		}
+	});
 });
