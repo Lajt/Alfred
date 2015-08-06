@@ -1,6 +1,10 @@
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
 
+function parsable(int) {
+	return !isNaN(int);
+}
+
 /************/
 /* Messages */
 /************/
@@ -47,10 +51,15 @@ bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
 	var client_found = false;
 
 	if(typeof clid == 'string') {
-		bot.clientfind(clid, function(err, data) {
-			clid = data["clid"];
+		if(parsable(clid)) {
+			clid = parseInt(clid);
 			client_found = true;
-		});
+		} else {
+			bot.clientfind(clid, function(err, data) {
+				clid = data["clid"];
+				client_found = true;
+			});
+		}
 	} else if (Number.isInteger(clid)) client_found = true;
 
 	var continueFunction = setInterval(function() {
@@ -157,10 +166,15 @@ bot_proto.prototype.channelinfo = function(cid, callbackFunction) {
 	var channel_found = false;
 
 	if(typeof cid == 'string') {
-		bot.channelfind(cid, function(err, data) {
-			cid = data["cid"];
+		if(parsable(cid)) {
+			cid = parseInt(cid);
 			channel_found = true;
-		});
+		} else {
+			bot.channelfind(cid, function(err, data) {
+				cid = data["cid"];
+				channel_found = true;
+			});
+		}
 	} else if (Number.isInteger(cid)) channel_found = true;
 
 	var continueFunction = setInterval(function() {
