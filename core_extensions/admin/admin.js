@@ -1,7 +1,7 @@
 var fs = require('fs');
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
-var admins = require('./admins.json');
+var admins = {};
 
 bot_proto.prototype.userIsAdmin = function(targetuid, adminLevel) {
 	if(adminLevel === true) adminLevel = 2;
@@ -31,5 +31,9 @@ bot_proto.prototype.userSetAdmin = function(targetuid, adminLevel) {
 }
 
 function saveToFile(content) {
-	fs.writeFile(__dirname + '/admins.json', JSON.stringify(content, null, 4));
+	fs.writeFile(bot.config["admin-file"], JSON.stringify(content, null, 4));
 }
+
+bot.on('login', function() {
+	admins = require(bot.config["admin-file"]);
+});
