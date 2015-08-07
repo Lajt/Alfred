@@ -28,7 +28,8 @@ function Alfred() {
         'login-name': 'serveradmin',
         'login-pass': 'password',
         'virtual-server': 1,
-        'command-identifer': '.'
+        'command-identifer': '.',
+        'admin-file': __dirname + '/core_extensions/admin/admins.json'
     };
     self.extensions = [];
     self.self = -1;
