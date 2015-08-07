@@ -88,7 +88,6 @@ bot.on('textmessage', function(data) {
 			commands[command]["callback"](invokerid, data, params);
 			return;
 		}
-		bot.sendMessage("Command not found", data["invokerid"]);
 	}
 
 	for(var command in globalCommands) {
