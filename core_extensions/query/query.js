@@ -82,10 +82,16 @@ bot_proto.prototype.clientmove = function(clid, cid, callbackFunction) {
 	var client_found = false;
 
 	if(typeof clid == 'string') {
-		bot.clientfind(clid, function(err, data) {
-			clid = data["clid"];
+		if(parsable(clid)) {
+			clid = parseInt(clid);
+			if(clid == undefined) clid = -1;
 			client_found = true;
-		});
+		} else {
+			bot.clientfind(clid, function(err, data) {
+				clid = data["clid"];
+				client_found = true;
+			});
+		}
 	} else if (Number.isInteger(clid)) client_found = true;
 
 	var continueFunction = setInterval(function() {
@@ -103,10 +109,16 @@ bot_proto.prototype.clientkick = function(clid, reasonid, reasonmsg, callbackFun
 	var client_found = false;
 
 	if(typeof clid == 'string') {
-		bot.clientfind(clid, function(err, data) {
-			clid = data["clid"];
+		if(parsable(clid)) {
+			clid = parseInt(clid);
+			if(clid == undefined) clid = -1;
 			client_found = true;
-		});
+		} else {
+			bot.clientfind(clid, function(err, data) {
+				clid = data["clid"];
+				client_found = true;
+			});
+		}
 	} else if (Number.isInteger(clid)) client_found = true;
 
 	var continueFunction = setInterval(function() {
