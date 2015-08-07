@@ -13,6 +13,10 @@ bot_proto.prototype.sendMessage = function(msg, target) {
 	bot.sendCommand('sendtextmessage', {'targetmode': 1, 'target': target, 'msg': msg});
 }
 
+bot_proto.prototype.sendPoke = function(msg, target) {
+	bot.sendCommand('clientpoke', {'clid': target, 'msg': msg});
+}
+
 bot_proto.prototype.say = function(msg) {
 	return bot.sendCommand('gm', {'msg': msg});
 }
@@ -53,6 +57,7 @@ bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
 	if(typeof clid == 'string') {
 		if(parsable(clid)) {
 			clid = parseInt(clid);
+			if(clid == undefined) clid = -1;
 			client_found = true;
 		} else {
 			bot.clientfind(clid, function(err, data) {
@@ -168,6 +173,7 @@ bot_proto.prototype.channelinfo = function(cid, callbackFunction) {
 	if(typeof cid == 'string') {
 		if(parsable(cid)) {
 			cid = parseInt(cid);
+			if(cid == undefined) cid = -1;
 			channel_found = true;
 		} else {
 			bot.channelfind(cid, function(err, data) {
