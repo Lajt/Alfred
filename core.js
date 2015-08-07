@@ -17,10 +17,6 @@ function Alfred() {
     global.bot_reference = this;
     global.bot_proto_reference = Alfred;
 
-    core_include('query');
-    core_include('admin');
-    core_include('cmdmanager');
-
     self.config = {
         'name': 'Alfred',
         'host': '127.0.0.1',
@@ -33,6 +29,10 @@ function Alfred() {
     };
     self.extensions = [];
     self.self = -1;
+
+    core_include('query');
+    core_include('admin');
+    core_include('cmdmanager');
 
     function checkQueue() {
         if(!current && commandQueue.length > 0) {
