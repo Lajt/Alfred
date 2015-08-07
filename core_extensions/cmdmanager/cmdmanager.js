@@ -85,9 +85,10 @@ bot.on('textmessage', function(data) {
 			delete data["invokerid"];
 			delete data["msg"];
 			params.splice(0, 1);
-			commands[command]["callback"](invokerid, data, params); // FIXME: Improve the callback invocation
+			commands[command]["callback"](invokerid, data, params);
 			return;
 		}
+		bot.sendMessage("Command not found", data["invokerid"]);
 	}
 
 	for(var command in globalCommands) {
@@ -96,7 +97,7 @@ bot.on('textmessage', function(data) {
 			delete data["invokerid"];
 			delete data["msg"];
 			params.splice(0, 1);
-			globalCommands[command]["callback"](invokerid, data, params); // FIXME: Improve the callback invocation
+			globalCommands[command]["callback"](invokerid, data, params);
 			return;
 		}
 	}
@@ -110,13 +111,11 @@ bot.on('textmessage', function(data) {
 					delete _data["invokerid"];
 					delete _data["msg"];
 					params.splice(0, 1);
-					channelCommands[command]["callback"](invokerid, _data, params); // FIXME: Improve the callback invocation
+					channelCommands[command]["callback"](invokerid, _data, params);
 					return;
 			}
 		}
 	});
-
-	bot.sendMessage("Command not found", data["invokerid"]);
 });
 
 stdin.addListener('data', function(input) {
