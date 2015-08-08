@@ -115,6 +115,8 @@ function Alfred() {
 
     Alfred.prototype.start = function () {
         sock = new net.Socket();
+        status = -2;
+        self.connected = false;
 
         sock.on('error', function(err) {
             timeout++;
@@ -123,8 +125,6 @@ function Alfred() {
                 process.exit();
             }
             console.error(timeStamp() + '[*] Connection to ' + self.config.host + ':' + self.config.port + ' failed... Retrying [' + timeout + ']');
-            status = -2;
-            self.connected = false;
 
             setTimeout(function() {
                 self.start();
@@ -133,10 +133,13 @@ function Alfred() {
         });
 
         sock.on('end', function() {
-            console.error(timeStamp() + '[*] Connection was closed, maybe the server was shut down... Retrying');
-            status = -2;
-            self.connected = false;
+            console.error(timeStamp() + '[*] Connection was closed, maybe the server was shut down... Reconnecting');
             self.start();
+        });
+
+        sock.on('drain', function() {
+            console.error(timeStamp() + '[*] Connection was interrupted, maybe a snapshot is being deployed... Reconnecting');
+            sock.end();
         });
 
         connect();
@@ -149,6 +152,8 @@ function Alfred() {
                 data["login-pass"] = self.config["login-pass"];
                 self.throwErr(err, data);
             } else {
+                data["login-name"] = self.config["login-name"];
+                data["login-pass"] = self.config["login-pass"];
                 self.emit('login');
                 self.connected = true;
             }
