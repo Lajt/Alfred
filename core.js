@@ -119,7 +119,7 @@ function Alfred() {
         sock.on('error', function(err) {
             timeout++;
             if(timeout >= 10) {
-                self.log('[*] Connection failed too often... Exiting');
+                console.error(timeStamp() + '[*] Connection failed too often... Exiting');
                 process.exit();
             }
             console.error(timeStamp() + '[*] Connection to ' + self.config.host + ':' + self.config.port + ' failed... Retrying [' + timeout + ']');
@@ -132,7 +132,7 @@ function Alfred() {
             self.emit('error', err);
         });
 
-        sock.on('end', function(err) {
+        sock.on('end', function() {
             console.error(timeStamp() + '[*] Connection was closed, maybe the server was shut down... Retrying');
             status = -2;
             self.connected = false;
