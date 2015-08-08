@@ -1,3 +1,5 @@
+"use strict";
+
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
 
@@ -32,11 +34,12 @@ bot_proto.prototype.clientlist = function(callbackFunction) {
 	bot.sendCommand('clientlist', null, function(err, data, raw) {
 		var clients = raw.split('|');
 		var returnClients = [];
+		var args;
 		for(var i=0; i<clients.length; i++) {
-			var arguments = clients[i].split(' ');
+			args = clients[i].split(' ');
 			var returnClient = {};
-			for(var x=0; x<arguments.length; x++) {
-				var argument = arguments[x].split(/=(.+)?/);
+			for(var x=0; x<args.length; x++) {
+				var argument = args[x].split(/=(.+)?/);
 				returnClient[argument[0]] = bot.decode(argument[1]);
 			}
 			returnClients.push(returnClient);
@@ -139,11 +142,12 @@ bot_proto.prototype.channellist = function(callbackFunction) {
 	bot.sendCommand('channellist', null, function(err, data, raw) {
 		var channels = raw.split('|');
 		var returnChannels = [];
+		var args;
 		for(var i=0; i<channels.length; i++) {
-			var arguments = channels[i].split(' ');
+			args = channels[i].split(' ');
 			var returnChannel = {};
-			for(var x=0; x<arguments.length; x++) {
-				var argument = arguments[x].split(/=(.+)?/);
+			for(var x=0; x<args.length; x++) {
+				var argument = args[x].split(/=(.+)?/);
 				returnChannel[argument[0]] = bot.decode(argument[1]);
 			}
 			returnChannels.push(returnChannel);
