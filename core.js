@@ -137,11 +137,6 @@ function Alfred() {
             self.start();
         });
 
-        sock.on('drain', function() {
-            console.error(timeStamp() + '[*] Connection was interrupted, maybe a snapshot is being deployed... Reconnecting');
-            sock.end();
-        });
-
         connect();
     }
 
