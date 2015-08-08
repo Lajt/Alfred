@@ -50,4 +50,4 @@ bot.start(); // This will start the bot
 - `login-name` - Specifies the name used to log into the server // Default: 'serveradmin'
 - `login-pass` - Specifies the password used to log into the server
 - `virtual-server` - Virtual-Server-ID // Default: 1
-- `command-identifer` - Determines how a command is specified // Default: '.'
+- `command-identifier` - Determines how a command is specified // Default: '.'
