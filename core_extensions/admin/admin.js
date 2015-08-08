@@ -35,5 +35,13 @@ function saveToFile(content) {
 }
 
 bot.on('login', function() {
-	admins = require(bot.config["admin-file"]);
+	fs.exists(bot.config["admin-file"], function(exists) {
+		if(!exists) {
+			fs.writeFile(bot.config["admin-file"], JSON.stringify({}, null, 4), function(err) {
+				admins = require(bot.config["admin-file"]);
+			});
+		} else {
+			admins = require(bot.config["admin-file"]);
+		}
+	});
 });
