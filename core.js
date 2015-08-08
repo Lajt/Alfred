@@ -1,3 +1,5 @@
+"use strict";
+
 var net = require('net');
 var sys = require('sys');
 var path = require('path');
