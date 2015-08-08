@@ -31,6 +31,7 @@ function Alfred() {
     };
     self.extensions = [];
     self.self = -1;
+    self.connected = false;
 
     core_include('query');
     core_include('admin');
@@ -123,6 +124,7 @@ function Alfred() {
             }
             self.log('[*] Connection to ' + self.config.host + ':' + self.config.port + ' failed... Retrying [' + timeout + ']');
             status = -2;
+            self.connected = false;
 
             setTimeout(function() {
                 self.start();
@@ -133,6 +135,7 @@ function Alfred() {
         sock.on('end', function(err) {
             self.log('[*] Connection was closed, maybe the server was shut down... Retrying');
             status = -2;
+            self.connected = false;
             self.start();
         });
 
@@ -145,9 +148,10 @@ function Alfred() {
                 data["login-name"] = self.config["login-name"];
                 data["login-pass"] = self.config["login-pass"];
                 self.throwErr(err, data);
-                return;
+            } else {
+                self.emit('login');
+                self.connected = true;
             }
-            self.emit('login');
         });
         self.sendCommand('use', {'sid': self.config["virtual-server"]});
         self.sendCommand('clientupdate', {'client_nickname': self.config["name"]});
