@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require('fs');
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
