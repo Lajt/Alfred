@@ -9,7 +9,7 @@ var sock = new net.Socket();
 var commandQueue = [];
 var status = -2;
 var current = false;
-var fatalErrors = [520, 3329, ];
+var timeout = 0;
 
 function Alfred() {
     var self = this;
@@ -24,7 +24,7 @@ function Alfred() {
         'login-name': 'serveradmin',
         'login-pass': 'password',
         'virtual-server': 1,
-        'command-identifer': '.',
+        'command-identifier': '.',
         'admin-file': __dirname + '/core_extensions/admin/admins.json'
     };
     self.extensions = [];
@@ -56,19 +56,15 @@ function Alfred() {
         return require(__dirname + '/core_extensions/' + extension + '/' + extension + '.js');
     }
 
-    Alfred.prototype.configure = function (settings) {
-        for(var setting in settings) {
-            //if(!self.config.hasOwnProperty(setting)) continue;
-            self.config[setting] = settings[setting];
-        }
-        return this;
-    }
-
-    Alfred.prototype.start = function () {
+    function connect() {
         sock.connect(self.config.port, self.config.host, function() {
+            self.log('[*] Connected to ' + self.config.host + ':' + self.config.port + ' as ' + self.config.name);
             self.load();
+            timeout = 0;
 
             var input = lineInputStream(sock);
+            input.removeAllListeners('line');
+
             input.on('line', function(recv) {
                 recv = recv.trim();
                 if(status < 0) {
@@ -103,11 +99,42 @@ function Alfred() {
                     current.raw_data = recv.toString();
                 }
             });
-
-            sock.on('error', function(error) {
-                self.emit('sock_error', 1337, error);
-            });
         });
+    }
+
+    Alfred.prototype.configure = function (settings) {
+        for(var setting in settings) {
+            //if(!self.config.hasOwnProperty(setting)) continue;
+            self.config[setting] = settings[setting];
+        }
+        return this;
+    }
+
+    Alfred.prototype.start = function () {
+        sock = new net.Socket();
+
+        sock.on('error', function(err) {
+            timeout++;
+            if(timeout >= 10) {
+                self.log('[*] Connection failed too often... Exiting');
+                process.exit();
+            }
+            self.log('[*] Connection to ' + self.config.host + ':' + self.config.port + ' failed... Retrying [' + timeout + ']');
+            status = -2;
+
+            setTimeout(function() {
+                self.start();
+            }, 3000);
+            self.emit('error', err);
+        });
+
+        sock.on('end', function(err) {
+            self.log('[*] Connection was closed, maybe the server was shut down... Retrying');
+            status = -2;
+            self.start();
+        });
+
+        connect();
     }
 
     Alfred.prototype.load = function() {
@@ -126,6 +153,11 @@ function Alfred() {
             self.self = data["client_id"];
         });
         self.emit('load');
+
+        setInterval(function() {
+            self.sendCommand('heartbeat');
+            self.emit('heartbeat');
+        }, 300000);
     }
 
     Alfred.prototype.include = function(extension) {
