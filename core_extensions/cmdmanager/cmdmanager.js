@@ -1,4 +1,6 @@
 "use strict";
+var User = require('../user/user.js').User;
+var UserFind = require('../user/user.js').UserFind;
 
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
@@ -7,6 +9,7 @@ var stdin = process.openStdin();
 var commands = {};
 var globalCommands = {};
 var channelCommands = {};
+var userTestCommands = {};
 var consoleCommands = {};
 
 function parseCmd(cmd) {
@@ -36,6 +39,9 @@ function parseCmd(cmd) {
 
 	return args;
 }
+
+bot_proto.prototype.User = User;
+bot_proto.prototype.UserFind = UserFind;
 
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
@@ -77,45 +83,47 @@ bot_proto.prototype.addConsoleCmd = function(cmd, callbackFunction, usage, descr
 	consoleCommands[cmd]["desc"] = description;
 }
 
+bot_proto.prototype.addUserTest = function (cmd, callbackFunction) {
+	userTestCommands[cmd] = callbackFunction;
+}
+
 bot.on('textmessage', function(data) {
 	if(data["invokerid"] == bot.self || data["invokerid"] < 1) return;
-	var _data = data, params = parseCmd(data["msg"]);
+	var params = parseCmd(data["msg"]);
+	var paramCommand = params[0];
+	params.splice(0, 1);
+	var invokerdata = data;
+	var targetmode = data["targetmode"];
 
-	for(var command in commands) {
-		if(params[0] == bot.config["command-identifier"] + command && data["targetmode"] == 1 && bot.userIsAdmin(data["invokeruid"], commands[command]["adminLevel"])) {
-			var invokerid = data["invokerid"];
-			delete data["invokerid"];
-			delete data["msg"];
-			params.splice(0, 1);
-			commands[command]["callback"](invokerid, data, params);
-			return;
+	bot.clientinfo(parseInt(invokerdata["invokerid"]), function(err, clientinfo) {
+		for(var prop in clientinfo) {
+			if(invokerdata.hasOwnProperty(prop)) continue;
+			invokerdata[prop] = clientinfo[prop];
 		}
-	}
+		var Invoker = new User(invokerdata, params);
 
-	for(var command in globalCommands) {
-		if(params[0] == bot.config["command-identifier"] + command && data["targetmode"] == 3 && bot.userIsAdmin(data["invokeruid"], globalCommands[command]["adminLevel"])) {
-			var invokerid = data["invokerid"];
-			delete data["invokerid"];
-			delete data["msg"];
-			params.splice(0, 1);
-			globalCommands[command]["callback"](invokerid, data, params);
-			return;
+		for(var command in commands) {
+			if(paramCommand == bot.config["command-identifier"] + command && targetmode == 1 && Invoker.isAdmin(commands[command]["adminLevel"])) {
+				commands[command]["callback"](Invoker);
+				return;
+			}
 		}
-	}
 
-	bot.clientinfo(parseInt(data["invokerid"]), function(err, data) {
-		var cid = data["cid"];
+		for(var command in globalCommands) {
+			if(paramCommand == bot.config["command-identifier"] + command && targetmode == 3 && Invoker.isAdmin(globalCommands[command]["adminLevel"])) {
+				globalCommands[command]["callback"](Invoker);
+				return;
+			}
+		}
+
 		for(var command in channelCommands) {
-			if(params[0] == bot.config["command-identifier"] + command && _data["targetmode"] == 2 && cid == channelCommands[command]["cid"] && bot.userIsAdmin(_data["invokeruid"], channelCommands[command]["adminLevel"])) {
-					console.log(_data);
-					var invokerid = _data["invokerid"];
-					delete _data["invokerid"];
-					delete _data["msg"];
-					params.splice(0, 1);
-					channelCommands[command]["callback"](invokerid, _data, params);
+			if(paramCommand == bot.config["command-identifier"] + command && targetmode == 2 && invokerdata["cid"] == channelCommands[command]["cid"] && Invoker.isAdmin(channelCommands[command]["adminLevel"])) {
+					channelCommands[command]["callback"](Invoker);
 					return;
 			}
 		}
+
+		bot.emit('unknowCommand', paramCommand, Invoker);
 	});
 });
 
