@@ -23,7 +23,7 @@ bot.on('login', function() {
 	bot.say('Hello everyone, have you already missed me?'); // Alfred sends a server-wide message
 });
 
-// The first parameter 'test' in this case specifies the command (careful)
+// The first parameter 'test' in this case specifies the command
 // The second paramter is the callback Function, it is given the Client-ID of the User, the other User-specific data and parameters that the user entered
 // Parameters are parsed like this: .hello "Alfred how are" you "today ?"
 // results in this array: ["Alfred how are", "you", "today ?"]
