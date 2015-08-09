@@ -1,4 +1,5 @@
 "use strict";
+var util = require('util');
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
 var delete_prop = [
@@ -113,15 +114,24 @@ function User(user_data, params) {
 
 	User.prototype.respond = function(msg) {
 		var self = this;
-		sendMessage(msg, self.info.clid, function() {
+		var args = Array.prototype.slice.call(arguments);
+		for(var i=0; i<args.length; i++){
+			if(typeof args[i] == 'object') args[i] = util.inspect(args[i]);
+		}
+
+		sendMessage(args.join(' '), self.info.clid, function() {
 			if(typeof callbackFunction == 'function') callbackFunction();
 		});
 		return this;
 	}
 
-	User.prototype.poke = function(msg) {
+	User.prototype.poke = function() {
 		var self = this;
-		sendPoke(msg, self.info.clid, function() {
+		var args = Array.prototype.slice.call(arguments);
+		for(var i=0; i<args.length; i++){
+			if(typeof args[i] == 'object') args[i] = util.inspect(args[i]);
+		}
+		sendPoke(args.join(' '), self.info.clid, function() {
 			if(typeof callbackFunction == 'function') callbackFunction();
 		});
 		return this;
