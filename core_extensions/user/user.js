@@ -72,18 +72,6 @@ var translateProp = {
 	'clid': 'clid'
 }
 
-function sendMessage(msg, target, callbackFunction) {
-	bot.sendCommand('sendtextmessage', {'targetmode': 1, 'target': target, 'msg': msg}, function(err, data) {
-		if(typeof callbackFunction == 'function') callbackFunction(err, data);
-	});
-}
-
-function sendPoke(msg, target, callbackFunction) {
-	bot.sendCommand('clientpoke', {'clid': target, 'msg': msg}, function() {
-		if(typeof callbackFunction == 'function') callbackFunction();
-	});
-}
-
 function parsable(int) {
 	return !isNaN(int);
 }
@@ -112,16 +100,13 @@ function User(user_data, params) {
 		}
 	}
 
-	User.prototype.respond = function(msg) {
+	User.prototype.respond = function() {
 		var self = this;
 		var args = Array.prototype.slice.call(arguments);
 		for(var i=0; i<args.length; i++){
 			if(typeof args[i] == 'object') args[i] = util.inspect(args[i]);
 		}
-
-		sendMessage(args.join(' '), self.info.clid, function() {
-			if(typeof callbackFunction == 'function') callbackFunction();
-		});
+		bot.sendCommand('sendtextmessage', {'targetmode': 1, 'target': self.info.clid, 'msg': args.join(' ')});
 		return this;
 	}
 
@@ -131,9 +116,7 @@ function User(user_data, params) {
 		for(var i=0; i<args.length; i++){
 			if(typeof args[i] == 'object') args[i] = util.inspect(args[i]);
 		}
-		sendPoke(args.join(' '), self.info.clid, function() {
-			if(typeof callbackFunction == 'function') callbackFunction();
-		});
+		bot.sendCommand('clientpoke', {'clid':  self.info.clid, 'msg': args.join(' ')});
 		return this;
 	}
 
