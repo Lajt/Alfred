@@ -9,7 +9,6 @@ var stdin = process.openStdin();
 var commands = {};
 var globalCommands = {};
 var channelCommands = {};
-var userTestCommands = {};
 var consoleCommands = {};
 
 function parseCmd(cmd) {
@@ -83,10 +82,6 @@ bot_proto.prototype.addConsoleCmd = function(cmd, callbackFunction, usage, descr
 	consoleCommands[cmd]["desc"] = description;
 }
 
-bot_proto.prototype.addUserTest = function (cmd, callbackFunction) {
-	userTestCommands[cmd] = callbackFunction;
-}
-
 bot.on('textmessage', function(data) {
 	if(data["invokerid"] == bot.self || data["invokerid"] < 1) return;
 	var params = parseCmd(data["msg"]);
@@ -123,7 +118,7 @@ bot.on('textmessage', function(data) {
 			}
 		}
 
-		bot.emit('unknowCommand', paramCommand, Invoker);
+		bot.emit('unknownCommand', paramCommand, Invoker);
 	});
 });
 
