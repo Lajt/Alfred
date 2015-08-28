@@ -24,14 +24,14 @@ bot.on('login', function() {
 });
 
 // The first parameter 'test' in this case specifies the command
-// The second paramter is the callback Function, it is given the Client-ID of the User, the other User-specific data and parameters that the user entered
+// The second paramter is the callback Function, it is given an instance of the class User
 // Parameters are parsed like this: .hello "Alfred how are" you "today ?"
 // results in this array: ["Alfred how are", "you", "today ?"]
 // The third parameter (false in this case) specifies the admin Level required
 // The level reaches from 0-2
 // The last two arguments are the usage-guide of the command and a description
-bot.addCmd('test', function(invokerid, data, params) {
-	bot.sendMessage('Sir, how may I be of help?', invokerid);
+bot.addCmd('test', function(User) {
+	User.respond('Sir, how may I be of help?');
 }, false, '.test', 'This is a testcommand');
 
 bot.start(); // This will start the bot
