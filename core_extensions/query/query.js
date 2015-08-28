@@ -13,18 +13,22 @@ function parsable(int) {
 bot_proto.prototype.sendMessage = function(msg, target) {
 	if(typeof msg != 'string') return;
 	bot.sendCommand('sendtextmessage', {'targetmode': 1, 'target': target, 'msg': msg});
+	return this;
 }
 
 bot_proto.prototype.sendPoke = function(msg, target) {
 	bot.sendCommand('clientpoke', {'clid': target, 'msg': msg});
+	return this;
 }
 
 bot_proto.prototype.say = function(msg) {
-	return bot.sendCommand('gm', {'msg': msg});
+	bot.sendCommand('sendtextmessage', {'targetmode': 3, 'target': bot.config['virtual-server'], 'msg': msg});
+	return this;
 }
 
 bot_proto.prototype.sayChannel = function(msg, target) {
-	return bot.sendCommand('sendtextmessage', {'targetmode': 2, 'target': target, 'msg': msg});
+	bot.sendCommand('sendtextmessage', {'targetmode': 2, 'target': target, 'msg': msg});
+	return this;
 }
 
 /**********/
@@ -46,12 +50,14 @@ bot_proto.prototype.clientlist = function(callbackFunction) {
 		}
 		if(typeof callbackFunction == 'function') callbackFunction(returnClients);
 	});
+	return this;
 }
 
 bot_proto.prototype.clientfind = function(client_nickname, callbackFunction) {
 	bot.sendCommand('clientfind', {'pattern': client_nickname}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
+	return this;
 }
 
 bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
@@ -79,6 +85,7 @@ bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
 			});
 		}
 	}, 0);
+	return this;
 }
 
 bot_proto.prototype.clientmove = function(clid, cid, callbackFunction) {
@@ -106,6 +113,7 @@ bot_proto.prototype.clientmove = function(clid, cid, callbackFunction) {
 			});
 		}
 	}, 0);
+	return this;
 }
 
 bot_proto.prototype.clientkick = function(clid, reasonid, reasonmsg, callbackFunction) {
@@ -133,6 +141,7 @@ bot_proto.prototype.clientkick = function(clid, reasonid, reasonmsg, callbackFun
 			});
 		}
 	}, 0);
+	return this;
 }
 
 /***********/
@@ -154,6 +163,7 @@ bot_proto.prototype.channellist = function(callbackFunction) {
 		}
 		if(typeof callbackFunction == 'function') callbackFunction(returnChannels);
 	});
+	return this;
 }
 
 bot_proto.prototype.channelcreate = function(channel_name, channel_params, callbackFunction) {
@@ -162,12 +172,14 @@ bot_proto.prototype.channelcreate = function(channel_name, channel_params, callb
 	bot.sendCommand('channelcreate', channel_params, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
+	return this;
 }
 
 bot_proto.prototype.channeldelete = function(cid, callbackFunction) {
 	bot.sendCommand('channeldelete', {'cid': cid}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
+	return this;
 }
 
 bot_proto.prototype.channeledit = function(cid, channel_params, callbackFunction) {
@@ -175,12 +187,14 @@ bot_proto.prototype.channeledit = function(cid, channel_params, callbackFunction
 	bot.sendCommand('channeledit', channel_params, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
+	return this;
 }
 
 bot_proto.prototype.channelfind = function(channel_name, callbackFunction) {
 	bot.sendCommand('channelfind', {'pattern': channel_name}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
+	return this;
 }
 
 bot_proto.prototype.channelinfo = function(cid, callbackFunction) {
@@ -208,6 +222,7 @@ bot_proto.prototype.channelinfo = function(cid, callbackFunction) {
 			});
 		}
 	}, 0);
+	return this;
 }
 
 /*****************/
@@ -217,10 +232,12 @@ bot_proto.prototype.groupAddClient = function (sgid, targetdbid, callbackFunctio
 	bot.sendCommand('servergroupaddclient', {'sgid': sgid, 'cldbid': targetdbid}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
+	return this;
 }
 
 bot_proto.prototype.groupDelClient = function(sgid, targetdbid, callbackFunction) {
 	bot.sendCommand('servergroupdelclient', {'sgid': sgid, 'cldbid': targetdbid}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
+	return this;
 }
