@@ -228,7 +228,7 @@ function Alfred() {
 
     Alfred.prototype.log = function(text) {
         console.log(timeStamp() + text);
-        return self;
+        return this;
     }
 
     Alfred.prototype.throwErr = function(err, err_data) {
