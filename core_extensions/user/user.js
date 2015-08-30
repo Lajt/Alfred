@@ -67,9 +67,10 @@ var delete_prop = [
 
 var translateProp = {
 	'client_unique_identifier': 'uid',
-	'client_nickname': 'name',
 	'client_database_id': 'dbid',
-	'clid': 'clid'
+	'client_nickname': 'name',
+	'clid': 'clid',
+	'cid': 'cid'
 }
 
 function parsable(int) {
@@ -122,12 +123,14 @@ function User(user_data, params) {
 
 	User.prototype.isAdmin = function(adminLevel) {
 		var self = this;
-		return bot.userIsAdmin(self.info.uid, adminLevel);
+		bot.userIsAdmin(self.info.uid, adminLevel);
+		return this;
 	}
 
 	User.prototype.setAdmin = function(adminLevel) {
 		var self = this;
-		return bot.userSetAdmin(self.info.uid, adminLevel);
+		bot.userSetAdmin(self.info.uid, adminLevel);
+		return this;
 	}
 
 	User.prototype.move = function(cid, callbackFunction) {
