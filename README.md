@@ -8,5 +8,5 @@ Alfred can be easily installed using the Node Packet Manager:
 
 `npm install alfred-teamspeak`
 
-[Wiki](https://github.com/schroffl/Alfred/wiki)
+[Wiki](https://github.com/schroffl/Alfred/wiki)  
 [Step by Step Guide](https://github.com/schroffl/Alfred/wiki/Step-by-Step-Guide)
