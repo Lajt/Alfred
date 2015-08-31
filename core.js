@@ -125,7 +125,7 @@ function Alfred() {
                 self.emit('error', err);
                 process.exit();
             }
-            console.error(timeStamp() + '[*] Connection to ' + self.config.host + ':' + self.config.port + ' failed... Retrying [' + timeout + ']');
+            console.error(timeStamp() + '[*] Connection to', self.config.host + ':' + self.config.port + ' failed... Retrying [' + timeout + ']');
 
             setTimeout(function() {
                 self.start();
@@ -222,7 +222,7 @@ function Alfred() {
 
     Alfred.prototype.registerEvent = function(event, params) {
         if(typeof params == 'undefined') params = {};
-        params["event"] = event;
+        params.event = event;
         self.sendCommand('servernotifyregister', params);
     }
 
