@@ -43,6 +43,7 @@ bot_proto.prototype.User = User;
 bot_proto.prototype.UserFind = UserFind;
 
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
+	bot.registerEvent('textprivate');
 	if(typeof callbackFunction != 'function') return;
 	if(commands.hasOwnProperty(cmd)) return bot.throwErr(2, "Command already exists: " + cmd);
 	commands[cmd] = {};
@@ -53,6 +54,7 @@ bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, 
 }
 
 bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
+	bot.registerEvent('textserver');
 	if(typeof callbackFunction != 'function') return;
 	if(globalCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "GlobalCommand already exists: " + cmd);
 	globalCommands[cmd] = {};
@@ -63,6 +65,7 @@ bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, u
 }
 
 bot_proto.prototype.addChannelCmd = function(cmd, cid, callbackFunction, adminLevel, usage, description) {
+	bot.registerEvent('textchannel', {'cid': cid});
 	if(typeof callbackFunction != 'function') return;
 	if(channelCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "ChannelCommand already exists: " + cmd);
 	channelCommands[cmd] = {};
