@@ -173,7 +173,7 @@ function User(user_data, params) {
 		return this;
 	}
 
-	User.prototype.hasGroup = function (groupid, callbackFunction) {
+	User.prototype.inGroup = function (groupid, callbackFunction) {
 		var self = this;
 		bot.sendCommand('servergroupclientlist', {'sgid': groupid}, function(err, data, raw) {
 			if(err) {
