@@ -172,6 +172,25 @@ function User(user_data, params) {
 		});
 		return this;
 	}
+
+	User.prototype.hasGroup = function (groupid, callbackFunction) {
+		var self = this;
+		bot.sendCommand('servergroupclientlist', {'sgid': groupid}, function(err, data, raw) {
+			if(err) {
+				if(typeof callbackFunction == 'function') callbackFunction(false);
+				return;
+			}
+
+			var dblist = raw.split('|');
+			for(var i=0; i<dblist.length; i++) {
+				if(dblist[i].split('=')[1] == self.info.dbid) {
+					if(typeof callbackFunction == 'function') callbackFunction(true);
+					return;
+				}
+			}
+			if(typeof callbackFunction == 'function') callbackFunction(false);
+		});
+	};
 }
 
 function UserFind(uname, callbackFunction) {
