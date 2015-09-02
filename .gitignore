@@ -1,2 +1,3 @@
 *.log
 /node_modules
+/core_modules/admin/admins.json
