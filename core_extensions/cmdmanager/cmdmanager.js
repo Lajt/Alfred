@@ -39,11 +39,16 @@ function parseCmd(cmd) {
 	return args;
 }
 
+bot.on('login', function() {
+	if(Object.keys(commands).length > 0) bot.registerEvent('textprivate');
+	if(Object.keys(globalCommands).length > 0) bot.registerEvent('textserver');
+	if(Object.keys(channelCommands).length > 0) bot.registerEvent('textchannel', {'cid': channelCommands[0].cid});
+});
+
 bot_proto.prototype.User = User;
 bot_proto.prototype.UserFind = UserFind;
 
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
-	bot.registerEvent('textprivate');
 	if(typeof callbackFunction != 'function') return;
 	if(commands.hasOwnProperty(cmd)) return bot.throwErr(2, "Command already exists: " + cmd);
 	commands[cmd] = {};
@@ -54,7 +59,6 @@ bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, 
 }
 
 bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
-	bot.registerEvent('textserver');
 	if(typeof callbackFunction != 'function') return;
 	if(globalCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "GlobalCommand already exists: " + cmd);
 	globalCommands[cmd] = {};
