@@ -1,6 +1,6 @@
 # Alfred
 Alfred is an easy-to-use Framwork written in Node.js.
-It's as easy to create a bot with a few commands as shown in the example below.
+It's as easy to create a bot with a few commands as [here](https://github.com/schroffl/Alfred/wiki#example).
 [Alfred on npmjs.com](https://www.npmjs.com/package/alfred-teamspeak)
 
 ## Install
