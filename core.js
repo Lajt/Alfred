@@ -40,6 +40,7 @@ function Alfred() {
     function checkQueue() {
         if(!current && commandQueue.length > 0) {
             current = commandQueue.shift();
+            current.sent = current.cmd + " " + current.params.join(' ');
             sock.write(current["cmd"] + " " + current["params"].join(' ') + '\r\n');
         }
     }
