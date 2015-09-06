@@ -53,11 +53,36 @@ bot_proto.prototype.clientlist = function(callbackFunction) {
 	return this;
 }
 
+bot_proto.prototype.clientdblist = function(callbackFunction) {
+	bot.sendCommand('clientdblist', null, function(err, data, raw) {
+		var clients = raw.split('|');
+		var returnClients = [];
+		var args;
+		for(var i=0; i<clients.length; i++) {
+			args = clients[i].split(' ');
+			var returnClient = {};
+			for(var x=0; x<args.length; x++) {
+				var argument = args[x].split(/=(.+)?/);
+				returnClient[argument[0]] = bot.decode(argument[1]);
+			}
+			returnClients.push(returnClient);
+		}
+		if(typeof callbackFunction == 'function') callbackFunction(returnClients);
+	});
+	return this;
+}
+
 bot_proto.prototype.clientfind = function(client_nickname, callbackFunction) {
 	bot.sendCommand('clientfind', {'pattern': client_nickname}, function(err, data) {
 		if(typeof callbackFunction == 'function') callbackFunction(err, data);
 	});
 	return this;
+}
+
+bot_proto.prototype.clientdbfind = function (client_nickname, callbackFunction) {
+	bot.sendCommand('clientdbfind', {'pattern': client_nickname}, function(err, data) {
+		if(typeof callbackFunction == 'function') callbackFunction(err, data);
+	});
 }
 
 bot_proto.prototype.clientinfo = function(clid, callbackFunction) {
