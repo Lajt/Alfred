@@ -69,6 +69,7 @@ var translateProp = {
 	'client_unique_identifier': 'uid',
 	'client_database_id': 'dbid',
 	'client_nickname': 'name',
+	'client_status': 'status',
 	'clid': 'clid',
 	'cid': 'cid'
 }
@@ -93,11 +94,6 @@ function User(user_data, params) {
 		}
 		else if(translateProp.hasOwnProperty(prop_name)) {
 			self.info[translateProp[prop_name]] = user_data[prop_name];
-		}
-		else if(prop[0] == 'client' || prop[0] == 'connection') {
-			prop.splice(0, 1);
-			self.info[prop.join('_')] = user_data[prop_name];
-			delete self.info[prop_name];
 		}
 	}
 
@@ -200,5 +196,26 @@ function UserFind(uname, callbackFunction) {
 	});
 }
 
+function UserFindDB(uname, callbackFunction) {
+	bot.sendCommand('clientdbfind', {'pattern': uname}, function(err, data) {
+		bot.clientdblist(function(list) {
+			for(var i=0; i<list.length; i++) {
+				if(list[i].cldbid == data.cldbid) {
+					bot.sendCommand('clientgetids', {'cluid': list[i]['client_unique_identifier']}, function(err, data) {
+						if(err == 1281) list[i]['client_status'] = 0;
+						else list[i]['client_status'] = 1;
+
+						var UserClient = new User(list[i], []);
+						if(typeof callbackFunction == 'function') callbackFunction(UserClient);
+					});
+					break;
+				}
+			}
+		});
+	});
+	return this;
+}
+
 exports.User = User;
 exports.UserFind = UserFind;
+exports.UserFindDB = UserFindDB;
