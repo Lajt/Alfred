@@ -1,6 +1,7 @@
 "use strict";
 var User = require('../user/user.js').User;
 var UserFind = require('../user/user.js').UserFind;
+var UserFindDB = require('../user/user.js').UserFindDB;
 
 var bot = global.bot_reference;
 var bot_proto = global.bot_proto_reference;
@@ -47,6 +48,7 @@ bot.on('login', function() {
 
 bot_proto.prototype.User = User;
 bot_proto.prototype.UserFind = UserFind;
+bot_proto.prototype.UserFindDB = UserFindDB;
 
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
