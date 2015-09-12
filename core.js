@@ -36,6 +36,7 @@ function Alfred() {
     core_include('query');
     core_include('admin');
     core_include('cmdmanager');
+    core_include('user');
 
     function checkQueue() {
         if(!current && commandQueue.length > 0) {
@@ -242,4 +243,4 @@ function Alfred() {
 }
 
 util.inherits(Alfred, events.EventEmitter);
-exports.Alfred = Alfred;
+module.exports = new Alfred();
