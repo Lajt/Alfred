@@ -46,10 +46,6 @@ bot.on('login', function() {
 	if(Object.keys(channelCommands).length > 0) bot.registerEvent('textchannel', {'cid': channelCommands[0].cid});
 });
 
-bot_proto.prototype.User = User;
-bot_proto.prototype.UserFind = UserFind;
-bot_proto.prototype.UserFindDB = UserFindDB;
-
 bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
 	if(commands.hasOwnProperty(cmd)) return bot.throwErr(2, "Command already exists: " + cmd);
