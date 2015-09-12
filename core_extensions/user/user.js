@@ -219,3 +219,7 @@ function UserFindDB(uname, callbackFunction) {
 exports.User = User;
 exports.UserFind = UserFind;
 exports.UserFindDB = UserFindDB;
+
+bot_proto.prototype.User = User;
+bot_proto.prototype.UserFind = UserFind;
+bot_proto.prototype.UserFindDB = UserFindDB;
