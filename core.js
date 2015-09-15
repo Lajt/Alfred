@@ -134,11 +134,6 @@ function Alfred() {
             }, 3000);
         });
 
-        sock.on('end', function() {
-            console.error(timeStamp() + '[*] Connection was closed, maybe the server was shut down... Reconnecting');
-            self.start();
-        });
-
         connect();
     }
 
