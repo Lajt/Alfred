@@ -6,7 +6,7 @@ It's as easy to create a bot with a few commands as shown [here](https://github.
 ## Install
 Alfred can be easily installed using the Node Packet Manager:
 
-`npm install alfred-teamspeak`
+`$ npm install alfred-teamspeak`
 
 [Wiki](https://github.com/schroffl/Alfred/wiki)  
 [Step by Step Guide](https://github.com/schroffl/Alfred/wiki/Step-by-Step-Guide)
