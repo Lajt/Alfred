@@ -56,6 +56,10 @@ bot_proto.prototype.addCmd = function(cmd, callbackFunction, adminLevel, usage, 
 	commands[cmd]["desc"] = description;
 }
 
+bot_proto.prototype.removeCommands = function() {
+	channelCommands = {};
+}
+
 bot_proto.prototype.addGlobalCmd = function(cmd, callbackFunction, adminLevel, usage, description) {
 	if(typeof callbackFunction != 'function') return;
 	if(globalCommands.hasOwnProperty(cmd)) return bot.throwErr(2, "GlobalCommand already exists: " + cmd);
